@@ -1,14 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>asdsdg</title>
-    </head>
-    <body>
+<%- include('partials/header.ejs') %>
         <h1>carplatezzzz:</h1>
 
         <% for (let i = 0; i < list.length; i++) {%>
-            <p><%=i+1%>. <%=list[i].number%> <%=list[i].firma%> <%=list[i].photo%></p>
+            <div class="card" style="width: 18rem;">
+                <img src="<%=list[i].photo_link %>" class="card-img-top" alt="#">
+                <div class="card-body">
+                  <p class="card-text"><%=list[i].full_name%> <%=list[i].year%> <%=list[i].price_pln%>zł</p>
+                  <h2 class="card-text"><%=list[i].plate%></h2>
+                </div>
+              </div>
         <%} %>
-    </body>
-
-</html>
+<%- include('partials/footer') %>

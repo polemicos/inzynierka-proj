@@ -1,17 +1,30 @@
-<!DOCTYPE html>
-
-<html>
-    <head>
-        <title>Homepage</title>
-    </head>
-    <body>
-        <h1>Chuj</h1>
-        <h3>Kurwa nie kuźwa</h3>
+<%- include('partials/header') %>
+    <div>
+        <h1>Strona głowna</h1>
+        <h3>bla bla bla</h3>
         <% if (author == "id") {%>
-            <p>pososi</p>
-        <% } %>
+            <p>id</p>
+            <% } %>
 
-        <h4>Author: <%= author %></h4>
-    </body>
-
-</html>
+            <h4>Author: <%= author %></h4>
+    </div>
+    <div>
+        <form action="/search" method="POST" class="number-input-wrapper">
+            <div class="plate">
+                <div class="flag">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/1/12/Flag_of_Poland.svg" alt="Polish Flag">
+                    PL
+                </div>
+                <div class="input-container">
+                    <input type="text" maxlength="8" placeholder="WZ 1234J" id="plate-input" >
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Szukaj</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById('plate-input').addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+    </script>
+<%- include('partials/footer') %>

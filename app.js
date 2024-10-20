@@ -4,10 +4,12 @@ const bp = require("body-parser");
 const mongo = require("mongoose");
 const app = express();
 
+const vision = require("@google-cloud/vision");
 
 
 
-mongo.connect("mongodb+srv://projAdmin:passpass123@inzproj.wpzxa5a.mongodb.net/?retryWrites=true&w=majority&appName=InzProj");
+
+mongo.connect("mongodb+srv://projAdmin:QnH7OJowgOD64cSM@inzproj.wpzxa5a.mongodb.net/?retryWrites=true&w=majority&appName=InzProj");
 
 
 //car dataSchema
@@ -42,7 +44,7 @@ var Car = mongo.model("Car", carSchema);
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
-app.use(bp.urlencoded({extended: true}));
+app.use(bp.urlencoded({ extended: true }));
 
 
 app.get("/carplates", async (req, res) => {
@@ -58,13 +60,7 @@ app.get("/carplates", async (req, res) => {
 });
 
 
-function list(){
-    res.render("cplist", {
-        list: cars
-    });
-}
-
-app.post("/search", (req, res)=>{
+app.post("/search", (req, res) => {
     let data = req.body;
     console.log(data);
     let author = "Mikita";
@@ -73,20 +69,20 @@ app.post("/search", (req, res)=>{
     })
 });
 
-app.get("/carplates/:id", (req, res)=>{
+app.get("/carplates/:id", (req, res) => {
     res.send("Carplate number: " + req.params.id);
 });
 
-app.get("/", (req, res)=>{
+app.get("/", (req, res) => {
     let author = "Mikita";
-    
+
     res.render("homepage", {
         author: author
-        
+
     });
 });
 
-app.get("*", (req, res)=>{
+app.get("*", (req, res) => {
     res.send("error!!! No such route!!!");
 });
 
@@ -111,7 +107,22 @@ app.get("*", (req, res)=>{
 // })
 
 
+async function quickstart() {
+
+    const client = new vision.ImageAnnotatorClient({
+        keyFilename: "mythic-plexus-425612-j3-d40b82738c04.json"
+    });
+
+    // Performs label detection on the image file
+    const [result] = await client.textDetection('./1.jpg');
+    const labels = result.textAnnotations;
+    console.log('Labels:');
+    labels.forEach(label => console.log(label.description.replaceAll(" ", "")));
+}
+quickstart();
+
+
 const PORT = 3000;
-app.listen(PORT, () =>{
+app.listen(PORT, () => {
     console.log(`Listening on port 3000 --> http://localhost:${PORT}/`);
 });

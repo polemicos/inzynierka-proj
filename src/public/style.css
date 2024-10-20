@@ -1,0 +1,90 @@
+/* General content container styling */
+.container {
+    max-width: 892px;
+    margin: 0 auto;
+    -webkit-box-shadow: 0 0 27px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 27px 0 rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.445);
+    position: relative;
+    padding: 2em;
+}
+
+/* Wrapper for number input */
+.number-input-wrapper {
+    display: inline-block;
+    align-items: center;
+}
+
+/* License plate container */
+.license-plate {
+    display: flex;
+    align-items: center;
+    width: 500px;
+    height: 100px;
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: white;
+    font-family: 'Arial', sans-serif;
+}
+
+/* National flag section */
+.license-plate-flag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 100%;
+    background-color: #0033a0;
+    /* Dark blue background for the flag container */
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    position: relative;
+    overflow: hidden;
+    /* Ensures content doesn’t overflow */
+}
+
+/* Polish flag representation */
+.polish-flag {
+    width: 100%;
+    /* Full width of the flag container */
+    height: 50%;
+    /* Half height for the white part */
+    background-color: white;
+    /* White part of the flag */
+    position: absolute;
+    top: 0;
+    /* Position at the top */
+}
+
+.polish-flag::after {
+    content: '';
+    display: block;
+    width: 100%;
+    /* Full width of the flag container */
+    height: 50%;
+    /* Half height for the red part */
+    background-color: red;
+    /* Red part of the flag */
+    position: absolute;
+    bottom: 0;
+    /* Position at the bottom */
+}
+
+
+/* Input container inside license plate */
+.license-plate-input-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Input styling inside license plate */
+.license-plate-input-wrapper input {
+    font-size: 36px;
+    border: none;
+    width: 100%;
+    text-align: center;
+    outline: none;
+}

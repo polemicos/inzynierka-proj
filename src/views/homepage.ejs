@@ -1,0 +1,31 @@
+<%- include('partials/header') %>
+    <div>
+        <h1>Strona główna</h1>
+    </div>
+
+    <div>
+        <form action="/search" method="POST" class="number-input-wrapper">
+            <!-- License plate structure -->
+            <div class="license-plate">
+                <!-- Flag section -->
+                <div class="license-plate-flag">
+                    <div class="polish-flag"></div>
+                    PL
+                </div>
+                <!-- Input container -->
+                <div class="license-plate-input-wrapper">
+                    <input type="text" maxlength="8" placeholder="WZ 1234J" id="plate-input">
+                </div>
+            </div>
+            <!-- Search button -->
+            <button type="submit" class="btn btn-primary">Szukaj</button>
+        </form>
+    </div>
+
+    <!-- Script to convert input text to uppercase -->
+    <script>
+        document.getElementById('plate-input').addEventListener('input', function (e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+    </script>
+    <%- include('partials/footer') %>

@@ -13,9 +13,8 @@ router.post("/search", (req, res) => {
     res.render("homepage");
 });
 
-// Catch-all route for unknown paths
-// router.get("*", (req, res) => {
-//     res.redirect("/");
-// });
+router.get("*", (req, res) => {
+    res.redirect("/");
+});
 
 module.exports = router;

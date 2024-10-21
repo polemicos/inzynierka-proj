@@ -11,9 +11,10 @@ class Car:
     full_name: str
     year: str
     photos_links: List[str]
+    plate: str = ""
 
 class OtomotoScraper:
-    def __init__(self, car_make: str) -> None:
+    def __init__(self) -> None:
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
@@ -21,14 +22,13 @@ class OtomotoScraper:
             "Accept-Language": "en-US,en;q=0.5",
             "Connection": "keep-alive",
         }
-        self.car_make = car_make
         self.website = "https://www.otomoto.pl/osobowe"
         self.session = requests.Session()  # Create a session to persist headers/cookies
 
     def scrape_pages(self, number_of_pages: int) -> List[Car]:
         cars = []
         for i in range(1, number_of_pages + 1):
-            current_website = f"{self.website}/{self.car_make}/?page={i}"
+            current_website = f"{self.website}/?page={i}"
             new_cars = self.scrape_cars_from_current_page(current_website)
             if new_cars:
                 cars += new_cars
@@ -75,26 +75,19 @@ class OtomotoScraper:
         return list_of_cars
 
     def extract_photos_from_offer_page(self, offer_url: str) -> List[str]:
-        """
-        This method takes an offer URL, scrapes the page, and returns a list of photo URLs.
-        """
+        
         try:
-            # Retry logic with exponential backoff
             retries = 3
             for attempt in range(retries):
                 response = self.session.get(offer_url, headers=self.headers)
                 
                 if response.status_code == 200:
-                    # Parse the page content with BeautifulSoup
                     soup = BeautifulSoup(response.content, 'html.parser')
 
-                    # Find all the photo gallery items (based on the 'data-testid' attribute)
                     photo_divs = soup.find_all("div", {"data-testid": "photo-gallery-item"})
 
-                    # Extract the image URLs
                     photo_urls = []
                     for photo_div in photo_divs:
-                        # Extract the image URL from the 'img' tag or 'style' attribute
                         img_tag = photo_div.find("img")
                         if img_tag:
                             url = img_tag.get("src")
@@ -109,7 +102,6 @@ class OtomotoScraper:
                     print(f"Failed to retrieve page, status code: {response.status_code}")
                     return []
             
-            # If all retries fail
             print(f"Failed to access offer page: {offer_url} after {retries} retries")
             return []
 
@@ -118,8 +110,7 @@ class OtomotoScraper:
             return []
 
 def scrape_otomoto() -> None:
-    make = "bmw"
-    scraper = OtomotoScraper(make)
+    scraper = OtomotoScraper()
     cars = scraper.scrape_pages(1)
     for car in cars:
         print(car)

@@ -1,4 +1,5 @@
 const express = require('express');
+require("dotenv").config();
 const bodyParser = require("body-parser");
 const connectDB = require("./config/database");
 const carRoutes = require("./routes/carRoutes");
@@ -17,11 +18,11 @@ app.set("views", __dirname + "\\views");
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routes
-app.use("/", indexRoutes);
 app.use("/", carRoutes);
+app.use("/", indexRoutes);
 
 // Start Google Vision service
-visionService();
+//visionService();
 
 // Server setup
 const PORT = 3000;

@@ -1,37 +1,29 @@
 import requests
 from bs4 import BeautifulSoup
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from typing import List
-import csv
-
+import time
+import random
 
 @dataclass
 class Car:
     link: str
     full_name: str
-    year: int
-    mileage_km: str
-    gearbox: str
-    fuel_type: str
-    price_pln: int
-    photo_link: str
-
+    year: str
+    photos_links: List[str]
 
 class OtomotoScraper:
     def __init__(self, car_make: str) -> None:
         self.headers = {
-            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) "
-            "AppleWebKit/537.11 (KHTML, like Gecko) "
-            "Chrome/23.0.1271.64 Safari/537.11",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept-Charset": "ISO-8859-1,utf-8;q=0.7,*;q=0.3",
-            "Accept-Encoding": "none",
-            "Accept-Language": "en-US,en;q=0.8",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "en-US,en;q=0.5",
             "Connection": "keep-alive",
         }
         self.car_make = car_make
-
         self.website = "https://www.otomoto.pl/osobowe"
+        self.session = requests.Session()  # Create a session to persist headers/cookies
 
     def scrape_pages(self, number_of_pages: int) -> List[Car]:
         cars = []
@@ -44,8 +36,11 @@ class OtomotoScraper:
 
     def scrape_cars_from_current_page(self, current_website: str) -> List[Car]:
         try:
-            response = requests.get(current_website, headers=self.headers).text
-            soup = BeautifulSoup(response, "html.parser")
+            response = self.session.get(current_website, headers=self.headers)
+            if response.status_code == 403:
+                raise Exception("403 Forbidden - Access denied to page")
+
+            soup = BeautifulSoup(response.text, "html.parser")
             cars = self.extract_cars_from_page(soup)
             return cars
         except Exception as e:
@@ -53,61 +48,81 @@ class OtomotoScraper:
             return []
 
     def extract_cars_from_page(self, soup: BeautifulSoup) -> List[Car]:
-        offers_table = soup.find("div", {"data-testid": "search-results"})
+        offers_table = soup.find("div", {'data-testid': "search-results"})
         cars = offers_table.find_all("article")
         list_of_cars = []
         for car in cars:
             try:
-                link = car.find("h1", class_="e1i3khom9 ooa-1ed90th er34gjf0").find("a", href=True).get("href")
-                full_name = car.find("h1", class_="e1i3khom9 ooa-1ed90th er34gjf0").find("a", href=True).text.strip()
-                year = car.find("dd", attrs={"data-parameter": "year"}).text.strip()
-                mileage_km = car.find("dd", attrs={"data-parameter": "mileage"}).text.strip()
-                gearbox = car.find("dd", attrs={"data-parameter": "gearbox"}).text.strip()
-                fuel_type = car.find("dd", attrs={"data-parameter": "fuel_type"}).text.strip()
-                price_pln = car.find("h3", class_="e1i3khom16 ooa-1n2paoq er34gjf0").text.strip()
-                photo_link = car.find("img", class_="e17vhtca4 ooa-2zzg2s").get("src")
+                link_tag = car.find("h1").find("a", href=True)
+                link = link_tag.get("href")
+                full_name = link_tag.get_text(strip=True)
+                year_tag = car.find("dd", {'data-parameter': 'year'})
+                year = year_tag.get_text(strip=True) if year_tag else "Unknown"
+                
+                # Extract photos from the offer page
+                photos_links = self.extract_photos_from_offer_page(link)
+
                 list_of_cars.append(
                     Car(
                         link=link,
                         full_name=full_name,
                         year=year,
-                        mileage_km=mileage_km,
-                        gearbox=gearbox,
-                        fuel_type=fuel_type,
-                        price_pln=price_pln,
-                        photo_link=photo_link
+                        photos_links=photos_links,
                     )
                 )
             except Exception as e:
                 print(f"Error msg: {e}")
         return list_of_cars
 
+    def extract_photos_from_offer_page(self, offer_url: str) -> List[str]:
+        """
+        This method takes an offer URL, scrapes the page, and returns a list of photo URLs.
+        """
+        try:
+            # Retry logic with exponential backoff
+            retries = 3
+            for attempt in range(retries):
+                response = self.session.get(offer_url, headers=self.headers)
+                
+                if response.status_code == 200:
+                    # Parse the page content with BeautifulSoup
+                    soup = BeautifulSoup(response.content, 'html.parser')
 
+                    # Find all the photo gallery items (based on the 'data-testid' attribute)
+                    photo_divs = soup.find_all("div", {"data-testid": "photo-gallery-item"})
 
-def write_to_csv(cars: List[Car]) -> None:
-    with open("cars.csv", mode="w") as f:
-        fieldnames = [
-            "link",
-            "full_name",
-            "year",
-            "mileage_km",
-            "gearbox",
-            "fuel_type",
-            "price_pln",
-            "photo_link"
-        ]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        for car in cars:
-            writer.writerow(asdict(car))
+                    # Extract the image URLs
+                    photo_urls = []
+                    for photo_div in photo_divs:
+                        # Extract the image URL from the 'img' tag or 'style' attribute
+                        img_tag = photo_div.find("img")
+                        if img_tag:
+                            url = img_tag.get("src")
+                            photo_urls.append(url)
 
+                    return photo_urls
+                
+                elif response.status_code == 403:
+                    print(f"Attempt {attempt+1}/{retries} - 403 Forbidden: Retrying after delay...")
+                    time.sleep(2 ** attempt)  # Exponential backoff
+                else:
+                    print(f"Failed to retrieve page, status code: {response.status_code}")
+                    return []
+            
+            # If all retries fail
+            print(f"Failed to access offer page: {offer_url} after {retries} retries")
+            return []
+
+        except Exception as e:
+            print(f"Error: {e}")
+            return []
 
 def scrape_otomoto() -> None:
     make = "bmw"
     scraper = OtomotoScraper(make)
-    cars = scraper.scrape_pages(3)
-    write_to_csv(cars)
-
+    cars = scraper.scrape_pages(1)
+    for car in cars:
+        print(car)
 
 if __name__ == "__main__":
     scrape_otomoto()

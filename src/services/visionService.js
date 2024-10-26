@@ -7,8 +7,8 @@ const quickstart = async () => {
 
     const [result] = await client.textDetection('./1.jpg');
     const labels = result.textAnnotations;
-    console.log('Labels:');
-    labels.forEach(label => console.log(label.description.replaceAll(" ", "")));
+    console.log('Text found:');
+    labels.forEach(text => console.log(text.description.replaceAll(" ", "")));
 };
 
 module.exports = quickstart;

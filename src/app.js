@@ -4,7 +4,6 @@ const bodyParser = require("body-parser");
 const connectDB = require("./config/database");
 const carRoutes = require("./routes/carRoutes");
 const indexRoutes = require("./routes/indexRoutes");
-const visionService = require("./services/visionService");
 
 const app = express();
 
@@ -21,8 +20,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/", carRoutes);
 app.use("/", indexRoutes);
 
-// Start Google Vision service
-//visionService();
 
 // Server setup
 const PORT = 3000;

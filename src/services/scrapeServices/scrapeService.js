@@ -1,18 +1,16 @@
-const OtomotoService = require("./otomotoService");
 const Car = require("../../models/car");
 const connectDB = require("../../config/database");
-
+const visionService = require("../visionService");
 connectDB();
 
 class ScrapeService {
     constructor() {
-        this.otomoto = new OtomotoService();
+        this.visionService = new visionService();
     }
 
-    async scrape() {
+    async scrape(cars) {
         try {
-            const cars = await this.otomoto.scrapePages(3);
-            console.log(`Scraped ${cars.length} cars.`);
+            console.log(`Processing ${cars.length} cars.`);
 
             for (const carData of cars) {
                 // Check if the car already exists
@@ -22,12 +20,13 @@ class ScrapeService {
                     continue; // Skip saving this car
                 }
 
+                const plate = await this.visionService.detectPlate(carData.photos_links);
                 const car = new Car({
                     link: carData.link,
                     full_name: carData.full_name,
                     year: carData.year,
                     photos_links: carData.photos_links,
-                    plate: null,  // Or any logic to set the plate
+                    plate: plate,
                 });
 
                 try {
@@ -42,33 +41,6 @@ class ScrapeService {
         }
     }
 
-
-    async scrapeAndSave(cars) {
-        try {
-            // Scrape car data from Otomoto
-            console.log(`Scraped ${cars.length} cars.`);
-
-            // Save each car to the database
-            for (const carData of cars) {
-                const car = new Car({
-                    link: carData.link,
-                    full_name: carData.full_name,
-                    year: carData.year,
-                    photos_links: carData.photos_links,
-                    plate: null  // You can set this to a specific value if available
-                });
-
-                try {
-                    await car.save();
-                    console.log(`Saved car: ${carData.full_name}`);
-                } catch (dbError) {
-                    console.error(`Error saving car ${carData.full_name}: ${dbError.message}`);
-                }
-            }
-        } catch (error) {
-            console.error(`Failed to scrape cars: ${error.message}`);
-        }
-    }
 }
 const scrape = new ScrapeService();
 scrape.scrape();

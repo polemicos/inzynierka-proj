@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "mythic-plexus-425612-j3",
+  "private_key_id": "59f1eac834b5bfd946a7d62af63103c346cee734",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCMFkpr3JURil+Q\nruXXEymzP+pcTJ6qkIrgXDGlAmfWRQaqCEhGIS9phn8bUYLvxB+gPLtuKIU6Auiv\nh5pBTpwlzlhQGHX5sDmfuPyHrJcpQ9lnhIV3kdjf0y1YyKXdsL6BmvjJbnKnoyg8\nYqH6PKf69rPBI6uj0fkl3GEPy2qeo4jO0irFBNhsZPE0H9quur/5CIaVjSe8u0wq\nCIs/oL3WF8DBQ95EW+HECh0V/xRXoC3eCXlxRr4vVLiWD0Zo7PlVQNpzFvFAT4oV\nm7a+4v6UbLcpE6KS12Se4XEwp9M7zkO0tbGt0bSoffL8D90tRDUOMiWkg+4+cTVP\nwDVVDOOHAgMBAAECggEAAtn5TdTBnAfLBjDpMMWNFb75UEOm/yXODd8Si59O6ceh\n6RgeEH9gba91KuMv3R2K30IdNpLQk2u3vMrv0uB8wTBAD/FPhXOW2K91RHW45fgh\nlr/Vz6dCWNv9kk8TQT31wsGays7auprRmNkRHvzZFnyrEAVf2wfNIH4p455qXyxB\nSPrNyTn1UnYXLea8Ng6HmdqzMwaW+npGjYvKYQt1hnWdrKioBTyIV6RIT9LbIKV3\npT32giNxYuxSpZpETtot9ZAbNFwWi+KhYYkEVRol4rR259hKIIJgxG23Fw1cW5Mp\nIo12mCRJzFtrC+ExjPbrRKVFkpw0L1hoIG9TRFKnAQKBgQC+h7d9XXbqRfGYpjc5\nANx0gE9G8mB8vj+izL6Mfo/csQ6vIcV544Byph/il4TBK4vM5YIIGU9eSO38rdwr\n2/2ZiLYZLdESa872fw/W7HEzFZ1uRuJdH9eEtlmexojYRVpm1lHIqtonQ9Y3fkpW\nhTdYPS/rXdni+a5M9gbqmLu1wQKBgQC8OUUiE4yscEEi0qB0POL3WArMKe59f/gz\nkc4KG6z64B1ijcZq7HUJwhCeQ4f1nlca+0p3FM8qev2nMhln3XDyFE0yydKN2giV\n2/B1Gb2Zb8Yl5c0aTzVc3/6C0aml9ilEjUq+GdN8YbwwTb/g0i3TTgbKnEvbw03y\njUJeYJo7RwKBgQC2FyrsK2k82P/e7ewVFJec2AvsODSyw3g59Qefak2/k4//HH2I\n0j6uU8phWoHLw/xmJGozp0zNRVH9jYPAfw1NsPSn97u6qUIxHppaw7okImJFRIWO\njqIA+e2I6yFZ4F5XrjiXWYIIyLJwcshFDCgqsr+baCSW4h0M/Iz7pGCxgQKBgQCW\nGbm29g4dyZs4EO3iJFf/VdeuftXwgSfGwESmLPHiUu08FcGgrRachIVKIKKAzhe6\nraDxm8elodU8CyjVenNCqcvyb54Yf0KPd4inabKYdNl4iWzpyTbN7NcDLf3zGn5I\na8CqHuBXdX1kq+wTdqkStEuYMdIQ3AwCHIJLzw/PqwKBgEmRwiKZOBW9p3Cm/77m\nOLAJer0bwoc0kIeVUg8kYnhp23ppK07ai8oFsQ91vK697kG9E9IhUSD7vxF4FwmR\nOt5ZnzN1qAUrM1SaDaZ3faVl45O6CTrBi6Q4vYdTuh8vtpsiXDSs71gZsGrOTBL4\n1VfmwHPFhHYQEgUQKig7DmqO\n-----END PRIVATE KEY-----\n",
+  "client_email": "inz-proj@mythic-plexus-425612-j3.iam.gserviceaccount.com",
+  "client_id": "111339077899705176617",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/inz-proj%40mythic-plexus-425612-j3.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

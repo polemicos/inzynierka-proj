@@ -13,7 +13,7 @@ connectDB();
 // Middleware
 app.set("view engine", "ejs");
 app.use(express.static("public"));
-app.set("views", __dirname + "\\views");
+app.set("views", __dirname + "/views");
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routes
@@ -29,15 +29,5 @@ app.listen(PORT, () => {
 
 
 
-//REGEX FOR CAR PLATE
-// const regex = /^[A-Z]{2,3}[- ]?[0-9A-Z]{4,5}$/;
 
-// function validateCarPlate(plate) {
-//     return regex.test(plate);
-// }
 
-// // Example usage:
-// console.log(validateCarPlate('WZ 1234A')); // true
-// console.log(validateCarPlate('PO-2345')); // true
-// console.log(validateCarPlate('KRA56789')); // true
-// console.log(validateCarPlate('AA 12345')); // false (invalid format)

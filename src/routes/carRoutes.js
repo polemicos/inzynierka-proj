@@ -5,7 +5,7 @@ const router = express.Router();
 // Route to get all cars
 router.get("/carplates", async (req, res) => {
     try {
-        const cars = await Car.find({});
+        const cars = await Car.aggregate([{ $sample: { size: 30 } }]);
         console.log(cars);
         res.render("cplist", {
             list: cars,

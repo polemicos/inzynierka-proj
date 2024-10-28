@@ -12,3 +12,5 @@ const scrapeService = new ScrapeService();
         console.error(`Error during scraping process: ${error.message}`);
     }
 })();
+
+return;

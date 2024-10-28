@@ -1,7 +1,8 @@
 const vision = require("@google-cloud/vision");
 
-// Updated regex for validating Polish car plate numbers
-const regex = /^(?:[A-Z]{3}\d{5}|[A-Z]{2,3}\d{4}[A-Z]?)$/; // Polish plate format
+// Flexible regex to capture Polish car plate formats, with optional spaces or hyphens, and up to 8 characters
+const regex = /^(?:[A-Z]{2,3}[-\s]?\d{4,5}[A-Z]?|[A-Z]{2,3}\s?[A-Z]{1,2}\s?\d{2,5}|[A-Z]{3}\s\d[A-Z]\d{2})$/;
+
 
 function validateCarPlate(plate) {
     return regex.test(plate);
@@ -13,52 +14,54 @@ class VisionService {
             keyFilename: "./mythic-plexus-425612-j3-59f1eac834b5.json",
         });
 
-        let plate = ''; // Variable to store the last valid plate detected
-
         for (const image of images) {
-            // Prepare the request object for the Vision API
             const request = {
                 image: { source: { imageUri: image } },
             };
 
             try {
-                // Perform text detection on the image URL
                 const [result] = await client.textDetection(request);
                 const labels = result.textAnnotations;
 
-                console.log(`Text found in image ${image}:`);
+                if (labels.length === 0) {
+                    console.log(`No text found in image ${image}`);
+                    continue;
+                }
 
-                labels.forEach((text) => {
-                    // Clean the text: trim whitespace
-                    const cleanedText = text.description.trim();
-                    console.log(`Detected text: ${cleanedText}`); // Log detected text
+                // Concatenate all detected text, replacing "-" with "".
+                const allText = labels.map(label => label.description).join(' ').replace(/-/g, '');
+                console.log(`Concatenated text for image ${image}: ${allText}`);
 
-                    // Split the text into parts
-                    const parts = cleanedText.split(/\s+/); // Split on whitespace
-                    const concatenatedParts = parts.join('').replaceAll("-", ""); // Concatenate parts without hyphens
+                const words = allText.split(/\s+/);
 
-                    // Validate concatenated version
-                    if (validateCarPlate(concatenatedParts)) {
-                        plate = concatenatedParts; // Assign if valid
+                // 1. Check each individual word for a valid plate format.
+                for (const word of words) {
+                    if (validateCarPlate(word)) {
+                        console.log(`Valid plate found: ${word}`);
+                        return word; // Return as soon as a valid plate is found
                     }
+                }
 
-                    // Check individual parts
-                    parts.forEach(part => {
-                        const cleanedPart = part.replaceAll("-", "").trim(); // Clean hyphens
-                        if (validateCarPlate(cleanedPart)) {
-                            plate = cleanedPart; // Assign if valid
+                // 2. Check combinations of consecutive words if no single word was valid.
+                for (let i = 0; i < words.length; i++) {
+                    for (let j = i + 1; j <= words.length; j++) {
+                        const joinedCombo = words.slice(i, j).join('');
+
+                        if (validateCarPlate(joinedCombo)) {
+                            console.log(`Valid plate found from combination: ${joinedCombo}`);
+                            return joinedCombo; // Return as soon as a valid plate is found
                         }
-                    });
-                });
+                    }
+                }
+
             } catch (error) {
                 console.error(`Error detecting text in image ${image}:`, error.message);
             }
         }
 
-        console.log(`Last valid plate: ${plate}`);
-        return plate; // Return the last valid plate found
+        console.log("No valid plate found in any image.");
+        return ''; // Return empty if no valid plate is found
     }
 }
-
 
 module.exports = VisionService;

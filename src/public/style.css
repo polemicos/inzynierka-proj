@@ -1,26 +1,10 @@
-/* General content container styling */
-.container {
-    max-width: 892px;
-    margin: 0 auto;
-    -webkit-box-shadow: 0 0 27px 0 rgba(0, 0, 0, 0.1);
-    box-shadow: 0 0 27px 0 rgba(0, 0, 0, 0.1);
-    background: rgba(255, 255, 255, 0.445);
-    position: relative;
-    padding: 2em;
-}
-
-/* Wrapper for number input */
-.number-input-wrapper {
-    display: inline-block;
-    align-items: center;
-}
-
 /* License plate container */
 .license-plate {
     display: flex;
     align-items: center;
     width: 500px;
-    height: 100px;
+    height: 80px;
+    /* Reduced height for a closer match */
     border: 2px solid black;
     border-radius: 10px;
     background-color: white;
@@ -32,45 +16,46 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 80px;
+    width: 60px;
+    /* Reduced width for smaller flag */
     height: 100%;
     background-color: #0033a0;
-    /* Dark blue background for the flag container */
     color: white;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: bold;
     position: relative;
     overflow: hidden;
-    /* Ensures content doesn’t overflow */
 }
 
 /* Polish flag representation */
 .polish-flag {
-    width: 100%;
-    /* Full width of the flag container */
-    height: 50%;
-    /* Half height for the white part */
+    margin-top: 1em;
+    width: 70%;
+    height: 30%;
     background-color: white;
-    /* White part of the flag */
     position: absolute;
     top: 0;
-    /* Position at the top */
 }
 
 .polish-flag::after {
     content: '';
     display: block;
     width: 100%;
-    /* Full width of the flag container */
     height: 50%;
-    /* Half height for the red part */
     background-color: red;
-    /* Red part of the flag */
     position: absolute;
     bottom: 0;
-    /* Position at the bottom */
 }
 
+/* PL text styling */
+.license-plate-flag .pl-text {
+    position: relative;
+    z-index: 1;
+    font-size: 14px;
+    /* Reduced font size for "PL" */
+    font-weight: bold;
+    margin-top: 40%;
+}
 
 /* Input container inside license plate */
 .license-plate-input-wrapper {
@@ -82,9 +67,45 @@
 
 /* Input styling inside license plate */
 .license-plate-input-wrapper input {
-    font-size: 36px;
+    font-size: 32px;
+    /* Adjusted font size for better balance */
+    font-family: 'Arial', sans-serif;
+    letter-spacing: 8px;
     border: none;
     width: 100%;
     text-align: center;
     outline: none;
+}
+
+#plate {
+    font-size: 40px;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    /* Full height */
+}
+
+main {
+    flex: 1;
+    /* Take up remaining space */
+}
+
+footer {
+    /* Ensure the footer is always at the bottom */
+    background-color: #343a40;
+    /* Dark footer background */
+    color: white;
+    /* White text */
+    text-align: center;
+    /* Center text */
+    padding: 1rem 0;
+    /* Vertical padding */
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    margin-top: auto;
+
 }

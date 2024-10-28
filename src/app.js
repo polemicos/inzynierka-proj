@@ -12,12 +12,12 @@ connectDB();
 
 // Middleware
 app.set("view engine", "ejs");
-app.use(express.static("public"));
+app.use(express.static("./src/public"));
 app.set("views", __dirname + "/views");
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routes
-app.use("/", carRoutes);
+app.use("/cars", carRoutes);
 app.use("/", indexRoutes);
 
 

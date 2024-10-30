@@ -20,7 +20,7 @@ class ScrapeService {
                     continue; // Skip saving this car
                 }
 
-                const plate = await this.visionService.detectPlate(carData.photos_links);
+                const plate = await this.visionService.detectPlates(carData.photos_links);
                 const car = new Car({
                     link: carData.link,
                     full_name: carData.full_name,
@@ -42,7 +42,5 @@ class ScrapeService {
     }
 
 }
-const scrape = new ScrapeService();
-scrape.scrape();
 
 module.exports = ScrapeService;

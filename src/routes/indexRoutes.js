@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const searchController = require("../controllers/searchController");
+const carController = require("../controllers/carController");
 
 // Homepage route
 router.get("/", (req, res) => {
@@ -22,7 +22,7 @@ router.post("/search", async (req, res) => {
             }
         );
     };
-    const data = await searchController.findByPlate(plate);
+    const data = await carController.findByPlate(plate);
     //console.log(data);
     res.render("homepage",
         {

@@ -102,7 +102,7 @@ class OtomotoService {
                 const photoDivs = $("div[data-testid='photo-gallery-item']");
 
                 photoDivs.each((index, element) => {
-                    if (photos.length >= 3) return false;
+                    if (photos.length >= 6) return false;
                     const imgTag = $(element).find("img");
                     const url = imgTag.attr("src");
                     if (url) photos.push(url);

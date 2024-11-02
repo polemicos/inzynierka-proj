@@ -9,4 +9,17 @@ async function findByPlate(plate) {
     }
 };
 
-exports.findByPlate = findByPlate;
+async function createOne(car) {
+    try {
+        await car.save();
+        return car;
+    } catch (error) {
+        console.error(`Error creating car: ${error.message}`);
+    }
+}
+
+
+module.exports = {
+    findByPlate,
+    createOne
+}

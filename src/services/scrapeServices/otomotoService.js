@@ -18,6 +18,7 @@ const userAgents = [
 class OtomotoService {
     constructor() {
         this.baseURL = "https://www.otomoto.pl/osobowe";
+        this.source = "Otomoto";
     }
 
     // Method to get a random user agent

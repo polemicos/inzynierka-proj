@@ -14,7 +14,9 @@
             <%= list[i].plate ? list[i].plate : "Nie znaleziono" %>
           </h2>
           <p class="card-link">
-            <a href="<%= list[i].link %>">Oryginalna oferta</a>
+            <a href="<%= list[i].link %>">
+              <%= list[i].source %>
+            </a>
           </p>
         </div>
       </div>

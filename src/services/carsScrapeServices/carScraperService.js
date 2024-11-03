@@ -98,3 +98,5 @@ class CarScraperService {
         throw new Error("Method 'getPhotoDivs' must be implemented in the subclass");
     }
 }
+
+module.exports = CarScraperService;

@@ -21,7 +21,7 @@ class VisionService {
         const client = new vision.ImageAnnotatorClient({
             keyFilename: "./mythic-plexus-425612-j3-59f1eac834b5.json",
         });
-
+        let potentialPlates = [];
         for (const image of images) {
             const request = { image: { source: { imageUri: image } } };
 
@@ -34,11 +34,11 @@ class VisionService {
                     continue;
                 }
 
-                const allText = labels.map(label => label.description).join(' ').replace(/-/g, '');
+                const allText = labels.map(label => label.description).join(' ').replace(/-|:|;/g, '');
                 console.log(`Concatenated text for image ${image}: ${allText}`);
 
                 const words = allText.split(/\s+/);
-                let potentialPlates = [];
+
 
                 for (let i = 0; i < words.length - 1; i++) {
                     if (regex3let.test(words[i]) && regex4_5.test(words[i + 1])) {
@@ -65,7 +65,6 @@ class VisionService {
                 console.log(`Potential plates for image ${image}:\n`, potentialPlates);
                 if (potentialPlates.length > 0) {
                     const selectedPlate = potentialPlates.reduce((max, current) => (current.area > max.area ? current : max)).plate;
-                    console.log(`Selected plate from largest area: ${selectedPlate}`);
                     console.log(`Selected plate from largest bounding box: ${selectedPlate}`);
                     return selectedPlate;
                 }
@@ -73,6 +72,26 @@ class VisionService {
             } catch (error) {
                 console.error(`Error detecting text in image ${image}:`, error.message);
             }
+        }
+        console.log(`Potential plates for all images:\n`, potentialPlates);
+        if (potentialPlates.length > 0) {
+            // Filter out plates that have an area defined
+            const platesWithArea = potentialPlates.filter(plate => plate.area !== undefined);
+
+            let selectedPlate;
+            if (platesWithArea.length > 1) {
+                // If more than one plate has an area, choose the one with the largest area
+                selectedPlate = platesWithArea.reduce((max, current) => (current.area > max.area ? current : max)).plate;
+            } else if (platesWithArea.length === 1) {
+                // If only one plate has an area, select it directly
+                selectedPlate = platesWithArea[0].plate;
+            } else {
+                // If no plates have an area, select the plate with the longest length
+                selectedPlate = potentialPlates.reduce((longest, current) => (current.plate.length > longest.plate.length ? current : longest)).plate;
+            }
+
+            console.log(`Selected plate: ${selectedPlate}`);
+            return selectedPlate;
         }
 
         console.log("No valid plate found in any image.");

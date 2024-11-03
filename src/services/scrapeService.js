@@ -1,7 +1,7 @@
-const Car = require("../../models/car");
-const connectDB = require("../../config/database");
-const visionService = require("../visionService");
-const { createOne } = require("../../controllers/carController");
+const Car = require("../models/car");
+const connectDB = require("../config/database");
+const visionService = require("./visionService");
+const { createOne } = require("../controllers/carController");
 connectDB();
 
 class ScrapeService {

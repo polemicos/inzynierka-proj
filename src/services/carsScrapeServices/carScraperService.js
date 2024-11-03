@@ -15,13 +15,13 @@ const userAgents = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36",
 ];
 
-class OtomotoService {
-    constructor() {
-        this.baseURL = "https://www.otomoto.pl/osobowe";
-        this.source = "Otomoto";
+// Base class
+class CarScraperService {
+    constructor(baseURL, source) {
+        this.baseURL = baseURL;
+        this.source = source;
     }
 
-    // Method to get a random user agent
     getRandomUserAgent() {
         return userAgents[Math.floor(Math.random() * userAgents.length)];
     }
@@ -39,7 +39,7 @@ class OtomotoService {
     async scrapeCarsFromPage(url) {
         try {
             const headers = {
-                "User-Agent": this.getRandomUserAgent(),  // Use random user agent
+                "User-Agent": this.getRandomUserAgent(),
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
                 "Accept-Encoding": "gzip, deflate, br",
                 "Accept-Language": "en-US,en;q=0.5",
@@ -49,8 +49,8 @@ class OtomotoService {
             const response = await axios.get(url, { headers });
             if (response.status === 403) throw new Error("403 Forbidden");
 
-            const $ = cheerio.load(response.data);  // Load HTML content using cheerio
-            const cars = this.extractCarsFromPage($);
+            const $ = cheerio.load(response.data);
+            const cars = await this.extractCarsFromPage($);
             return cars;
         } catch (err) {
             console.error(`Failed to scrape ${url}: ${err.message}`);
@@ -59,37 +59,14 @@ class OtomotoService {
     }
 
     async extractCarsFromPage($) {
-        const cars = [];
-        const offers = $("article");
-
-        // Collect promises for async operations
-        const promises = offers.map(async (index, offer) => {
-            try {
-                const linkTag = $(offer).find("h1 > a");
-                const link = linkTag.attr("href");
-                const fullName = linkTag.text().trim();
-                const year = $(offer).find("dl > dd[data-parameter='year']").text().trim() || "Unknown";
-
-                // Await the photos
-                const photos = await this.extractPhotosFromOfferPage(link);  // Await this call
-
-                cars.push({ link: link, full_name: fullName, year, photos_links: photos });
-            } catch (err) {
-                console.error(`Error extracting car data: ${err.message}`);
-            }
-        });
-
-        // Wait for all promises to complete
-        await Promise.all(promises);
-        return cars;
+        throw new Error("Method 'extractCarsFromPage' must be implemented in the subclass");
     }
 
-    // Extract photos from the car's individual page
     async extractPhotosFromOfferPage(offerUrl) {
         const photos = [];
         try {
             const headers = {
-                "User-Agent": this.getRandomUserAgent(),  // Use random user agent
+                "User-Agent": this.getRandomUserAgent(),
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
                 "Accept-Encoding": "gzip, deflate, br",
                 "Accept-Language": "en-US,en;q=0.5",
@@ -97,10 +74,9 @@ class OtomotoService {
             };
 
             const response = await axios.get(offerUrl, { headers });
-
             if (response.status === 200) {
                 const $ = cheerio.load(response.data);
-                const photoDivs = $("div[data-testid='photo-gallery-item']");
+                const photoDivs = this.getPhotoDivs($);
 
                 photoDivs.each((index, element) => {
                     if (photos.length >= 6) return false;
@@ -115,8 +91,10 @@ class OtomotoService {
             console.error(`Failed to scrape photos from ${offerUrl}: ${err.message}`);
         }
 
-        return photos;  // Ensure photos is an array of strings
+        return photos;
+    }
+
+    getPhotoDivs($) {
+        throw new Error("Method 'getPhotoDivs' must be implemented in the subclass");
     }
 }
-
-module.exports = OtomotoService;

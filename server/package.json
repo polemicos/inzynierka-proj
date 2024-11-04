@@ -1,0 +1,26 @@
+{
+  "name": "inzynierka-proj",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/app.js"
+  },
+  "author": "Mikita Rakovich",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/vision": "^4.3.0",
+    "axios": "^1.7.7",
+    "body-parser": "^1.20.2",
+    "cheerio": "^1.0.0",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "mongoose": "^8.4.1",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}

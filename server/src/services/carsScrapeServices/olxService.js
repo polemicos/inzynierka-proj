@@ -1,3 +1,5 @@
+const CarScraperService = require("./carScraperService");
+
 class OlxService extends CarScraperService {
     constructor() {
         super("https://www.olx.pl/motoryzacja/samochody", "OLX");
@@ -10,11 +12,11 @@ class OlxService extends CarScraperService {
         const promises = offers.map(async (index, offer) => {
             try {
                 const linkTag = $(offer).find("div[data-cy='ad-card-title'] > a");
-                const link = linkTag.attr("href");
+                const link = 'https://www.olx.pl' + linkTag.attr("href");
                 const fullName = $(linkTag).find("h6").text().trim();
                 const year = $(offer).find("dl > dd[data-parameter='year']").text().trim() || "Unknown";
-                const photos = await this.extractPhotosFromOfferPage(link);
-                cars.push({ link: link, full_name: fullName, year, photos_links: photos });
+                const [photos, brand] = await this.extractPhotosAndBrandFromOfferPage(link);
+                cars.push({ link: link, full_name: fullName, year, brand, photos_links: photos });
             } catch (err) {
                 console.error(`Error extracting car data: ${err.message}`);
             }
@@ -27,6 +29,14 @@ class OlxService extends CarScraperService {
     getPhotoDivs($) {
         return $("div[class='swiper-zoom-container']");
     }
+
+    getBrand($) {
+        const nav = $("nav");
+        const carCategoryLi = nav.find("li:contains('Samochody osobowe')");
+        const brandLi = carCategoryLi.next("li");
+        return brandLi.text().trim();
+    }
+
 }
 
 module.exports = OlxService;

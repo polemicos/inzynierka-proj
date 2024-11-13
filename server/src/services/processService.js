@@ -1,15 +1,12 @@
 const Car = require("../models/car");
 const connectDB = require("../config/database");
-const visionService = require("./visionService");
+const VisionService = require("./visionService");
 const { createOne } = require("../controllers/carController");
 connectDB();
 
-class ScrapeService {
-    constructor() {
-        this.visionService = new visionService();
-    }
+class ProcessService {
 
-    async scrape(cars, source) {
+    async processCars(cars, source) {
         try {
             console.log(`Processing ${cars.length} cars.`);
 
@@ -20,18 +17,22 @@ class ScrapeService {
                     console.log(`Car already exists: ${carData.full_name}`);
                     continue; // Skip saving this car
                 }
+                if (carData.photos_links.length === 0) {
+                    console.log(`No photos found for car: ${carData.full_name}`);
+                    continue; // Skip saving this car
+                }
 
-                const plate = await this.visionService.detectPlates(carData.photos_links);
-                const existingCarPlate = await Car.findOne({ plate: plate });
-                if (existingCarPlate) {
-                    console.log(`Car already exists: ${carData.full_name}`);
-                    continue;
+                const plate = await VisionService.detectPlates(carData.photos_links);
+                if (plate === "") {
+                    console.log(`No plate found for car: ${carData.full_name}`);
+                    continue; // Skip saving this car
                 }
                 const car = new Car({
                     source,
                     link: carData.link,
                     full_name: carData.full_name,
                     year: carData.year,
+                    brand: carData.brand,
                     photos_links: carData.photos_links,
                     plate: plate,
                 });
@@ -44,10 +45,10 @@ class ScrapeService {
                 }
             }
         } catch (error) {
-            console.error(`Failed to scrape cars: ${error.message}`);
+            console.error(`Failed to process cars: ${error.message}`);
         }
     }
 
 }
 
-module.exports = ScrapeService;
+module.exports = ProcessService;

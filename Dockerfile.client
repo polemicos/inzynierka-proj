@@ -5,7 +5,7 @@ FROM node:20
 WORKDIR /app
 
 # Copy package.json and package-lock.json to the working directory.
-COPY package*.json ./
+COPY package*.json ./client
 
 # Install the application dependencies.
 RUN npm install
@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # Command to run the application.
-CMD ["node", "src/app.js"]
+CMD ["node", "start"]

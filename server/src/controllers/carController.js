@@ -9,6 +9,15 @@ async function findByPlate(plate) {
     }
 };
 
+async function findByBrand(brand) {
+    try {
+        const cars = await Car.find({ brand: { $regex: brand, $options: 'i' } });
+        return cars;
+    } catch (error) {
+        console.error(`Error searching for cars: ${error.message}`);
+    }
+};
+
 async function createOne(car) {
     try {
         await car.save();
@@ -21,5 +30,6 @@ async function createOne(car) {
 
 module.exports = {
     findByPlate,
+    findByBrand,
     createOne
 }

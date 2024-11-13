@@ -1,28 +1,55 @@
 const express = require("express");
 const Car = require("../models/car");
 const router = express.Router();
-
+const carController = require("../controllers/carController");
+const VisionService = require("../services/visionService");
+const multer = require("multer");
+const upload = multer();
 // Route to get all cars with pagination
-router.get("/carplates", async (req, res) => {
-    const page = parseInt(req.query.page) || 1; // Default to page 1
-    const limit = parseInt(req.query.limit) || 20; // Default to 10 cars per page
+router.get("/cars", async (req, res) => {
 
     try {
-        const cars = await Car.aggregate([{ $sample: { size: limit } }]); // Replace with sample query for demo
-        const totalCars = await Car.countDocuments();
-        const totalPages = Math.ceil(totalCars / limit);
+        const cars = await Car.find({});
 
-        res.render("cars", {
-            list: cars,
-            currentPage: page,
-            totalPages,
-            limit,
-        });
+
+        res.json(
+            {
+                list: cars,
+            }
+        )
     } catch (err) {
         console.error("Error fetching data from database: ", err);
-        res.render("cars", { list: [], currentPage: 1, totalPages: 1 });
+        res.json(
+            {
+                list: [],
+            }
+        )
     }
 });
+// Route to get cars by plate
+router.get("/search/plate/:plate", async (req, res) => {
+    console.log(req.params.plate);
+    const plate = req.params.plate;
+    const data = await carController.findByPlate(plate);
+    //console.log(data);
+    res.json(data);
+});
+
+// Route to get cars by brand
+router.get("/search/brand/:brand", async (req, res) => {
+    console.log(req.params.brand);
+    const brand = req.params.brand;
+    const data = await carController.findByBrand(brand);
+    //console.log(data);
+    res.json(data);
+});
+
+// Route to detect plates from provided images
+router.post("/detect", upload.single("img"), async (req, res) => {
+    const img = req.file.buffer;
+    const data = await VisionService.detectPlates([img], 1);
+    res.json(data);
+})
 
 
 module.exports = router;

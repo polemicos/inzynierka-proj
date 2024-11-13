@@ -58,12 +58,17 @@ class CarScraperService {
         }
     }
 
+    getBrand($) {
+        throw new Error("Method 'getBrand' must be implemented in the subclass");
+    }
+
     async extractCarsFromPage($) {
         throw new Error("Method 'extractCarsFromPage' must be implemented in the subclass");
     }
 
-    async extractPhotosFromOfferPage(offerUrl) {
+    async extractPhotosAndBrandFromOfferPage(offerUrl) {
         const photos = [];
+        let brand = "";
         try {
             const headers = {
                 "User-Agent": this.getRandomUserAgent(),
@@ -76,10 +81,11 @@ class CarScraperService {
             const response = await axios.get(offerUrl, { headers });
             if (response.status === 200) {
                 const $ = cheerio.load(response.data);
-                const photoDivs = this.getPhotoDivs($);
+                let photoDivs = this.getPhotoDivs($);
+                brand = this.getBrand($);
 
                 photoDivs.each((index, element) => {
-                    if (photos.length >= 6) return false;
+                    if (photos.length > 6) return false;
                     const imgTag = $(element).find("img");
                     const url = imgTag.attr("src");
                     if (url) photos.push(url);
@@ -91,10 +97,11 @@ class CarScraperService {
             console.error(`Failed to scrape photos from ${offerUrl}: ${err.message}`);
         }
 
-        return photos;
+        return [photos, brand];
     }
 
     getPhotoDivs($) {
         throw new Error("Method 'getPhotoDivs' must be implemented in the subclass");
     }
 }
+module.exports = CarScraperService;

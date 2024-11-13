@@ -5,18 +5,22 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import Cars from './pages/Cars';
 import Info from './pages/Info';
-
+import DetectPlate from './pages/DetectPlates';
+import './App.css';
 const App = () => (
   <Router>
-    <Header />
-    <div className="content">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/cars" element={<Cars />} />
-        <Route path="/info" element={<Info />} />
-      </Routes>
+    <div className="App">
+      <Header />
+      <div className="content">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/detect" element={<DetectPlate />} />
+          <Route path="/cars" element={<Cars />} />
+          <Route path="/info" element={<Info />} />
+        </Routes>
+      </div>
+      <Footer />
     </div>
-    <Footer />
   </Router>
 );
 

@@ -1,25 +1,43 @@
 const OtomotoService = require("./services/carsScrapeServices/otomotoService");
 const OlxService = require("./services/carsScrapeServices/olxService");
-const ScrapeService = require("./services/scrapeService");
+const ProcessService = require("./services/processService");
 
 const otomotoService = new OtomotoService();
 const olxService = new OlxService();
-const scrapeService = new ScrapeService();
 
-while (true) {
-    //Scrape 5 pages of each service immediately
-    (async () => {
+const processService = new ProcessService();
+const pagesToScrape = 5;
+
+async function scrapeAndProcess(service) {
+    await new Promise((resolve, reject) => {
         try {
-            const cars = await otomotoService.scrapePages(5);
-            await scrapeService.scrape(cars, otomotoService.source);
-            cars = await olxService.scrapePages(5);
-            await scrapeService.scrape(cars, olxService.source);
+            console.log(`Starting ${service.source} scraping...`);
+            service.scrapePages(pagesToScrape).then((cars) => {
+                resolve(cars);
+            })
 
-        } catch (error) {
-            console.error(`Error during scraping process: ${error.message}`);
         }
-    })();
-    // Wait for an hour
-    await new Promise(resolve => setTimeout(resolve, 3600000));
+        catch (error) {
+            console.error(`Error during ${service.source} scraping: ${error.message}`);
+            throw error;  // Rethrow error to be handled in the main loop
+        }
+    }).then((cars) => {
+        return processService.processCars(cars, service.source);
+    });
+
 }
 
+(async () => {
+    while (true) {
+        try {
+            // Sequentially call scrapeAndProcess for each service
+            await scrapeAndProcess(otomotoService);  // This waits for Otomoto to finish scraping and processing
+            await scrapeAndProcess(olxService);      // This waits for OLX to finish scraping and processing
+
+            console.log("Waiting for an hour...");
+            await new Promise(resolve => setTimeout(resolve, 3600000));  // 1-hour delay
+        } catch (error) {
+            console.error(`Unexpected error in the loop: ${error.message}`);
+        }
+    }
+})();

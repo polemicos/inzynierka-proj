@@ -1,8 +1,8 @@
 const express = require("express");
+const cors = require("cors");
 const bodyParser = require("body-parser");
 const connectDB = require("./config/database");
 const carRoutes = require("./routes/carRoutes");
-const indexRoutes = require("./routes/indexRoutes");
 require("dotenv").config();
 
 const app = express();
@@ -11,11 +11,11 @@ const app = express();
 connectDB();
 
 // Middleware
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routes
-app.use("/car", carRoutes);
-app.use("/", indexRoutes);
+app.use("/api", carRoutes);
 
 
 // Server setup

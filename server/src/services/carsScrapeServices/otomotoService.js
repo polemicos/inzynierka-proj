@@ -1,3 +1,4 @@
+const CarScraperService = require("./carScraperService");
 class OtomotoService extends CarScraperService {
     constructor() {
         super("https://www.otomoto.pl/osobowe", "Otomoto");
@@ -13,8 +14,8 @@ class OtomotoService extends CarScraperService {
                 const link = linkTag.attr("href");
                 const fullName = linkTag.text().trim();
                 const year = $(offer).find("dl > dd[data-parameter='year']").text().trim() || "Unknown";
-                const photos = await this.extractPhotosFromOfferPage(link);
-                cars.push({ link: link, full_name: fullName, year, photos_links: photos });
+                const [photos, brand] = await this.extractPhotosAndBrandFromOfferPage(link);
+                cars.push({ link: link, full_name: fullName, year, brand, photos_links: photos });
             } catch (err) {
                 console.error(`Error extracting car data: ${err.message}`);
             }
@@ -26,6 +27,13 @@ class OtomotoService extends CarScraperService {
 
     getPhotoDivs($) {
         return $("div[data-testid='photo-gallery-item']");
+    }
+
+    getBrand($) {
+        const nav = $("nav");
+        const carCategoryLi = nav.find("li:contains('Osobowe')");
+        const brandLi = carCategoryLi.next("li");
+        return brandLi.text().trim();
     }
 }
 

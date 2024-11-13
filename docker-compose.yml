@@ -1,12 +1,12 @@
 version: '3.8'
 
 services:
-  app:
+  server:
     build:
       context: .
-      dockerfile: Dockerfile.app
+      dockerfile: Dockerfile.server
     ports:
-      - "3000:3000"
+      - "5000:5000"
     environment:
       - MONGODB_URI=${MONGODB_URI}
       - VISION_AUTH_JSON="./mythic-plexus-425612-j3-59f1eac834b5.json"
@@ -14,6 +14,15 @@ services:
       - .:/app # Mount current directory to /app in the container
     depends_on:
       - mongo # Ensure MongoDB is started before the web app
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app # Mount current directory to /app in the container
 
   scraper:
     build:

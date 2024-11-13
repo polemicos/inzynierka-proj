@@ -1,0 +1,7 @@
+/node_modules
+.code-workspace
+./src/config/VISION_API_KEY.json
+.env
+
+inzynierka-proj.code-workspace
+TODO.txt

@@ -66,7 +66,7 @@ class VisionService {
                             : potentialPlates.push({ plate: word });
                     }
                 }
-                console.log(`Potential plates for image:\n`, potentialPlates);
+                console.log(`Potential plates for image ${image}:\n`, potentialPlates);
             }
 
             catch (error) {

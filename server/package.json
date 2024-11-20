@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/server.js",
     "scrape": "node src/scraper.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "collect": "node src/oldOffersCollector.js"
   },
   "author": "Mikita Rakovich",
   "license": "ISC",

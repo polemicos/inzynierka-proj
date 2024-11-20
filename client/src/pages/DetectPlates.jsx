@@ -7,11 +7,9 @@ const DetectPlates = () => {
         if (!selectedImage) return;
 
         try {
-            // Create a new FormData object to handle the file upload
             const formData = new FormData();
-            formData.append("img", selectedImage); // Append the image file with a key that the backend expects, like 'file'.
+            formData.append("img", selectedImage);
 
-            // Send the formData with the image file in the request body
             const response = await fetch("http://localhost:5000/api/detect", {
                 method: "POST",
                 body: formData,
@@ -21,7 +19,6 @@ const DetectPlates = () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            // Parse the response as JSON
             const data = await response.json();
             setDetectedPlates(data);
         } catch (error) {
@@ -66,9 +63,12 @@ const DetectPlates = () => {
 
             {detectedPlates && (
                 <div>
+                    <h2>Wykryte rejestracje:</h2>
                     {detectedPlates.map((plate, index) => (
                         <div key={index}>
-                            <p>{plate}</p>
+                            <ol class="list-group list-group-numbered">
+                                <li class="list-group-item">{plate}</li>
+                            </ol>
                         </div>
                     ))}
                 </div>

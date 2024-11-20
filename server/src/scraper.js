@@ -27,7 +27,7 @@ async function scrapeAndProcess(service) {
 
 }
 
-(async () => {
+const main = async () => {
     while (true) {
         try {
             // Sequentially call scrapeAndProcess for each service
@@ -40,4 +40,6 @@ async function scrapeAndProcess(service) {
             console.error(`Unexpected error in the loop: ${error.message}`);
         }
     }
-})();
+};
+
+main();

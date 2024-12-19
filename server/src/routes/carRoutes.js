@@ -5,13 +5,12 @@ const carController = require("../controllers/carController");
 const VisionService = require("../services/visionService");
 const multer = require("multer");
 const upload = multer();
+
 // Route to get all cars with pagination
 router.get("/cars", async (req, res) => {
 
     try {
         const cars = await Car.find({});
-
-
         res.json(
             {
                 list: cars,
@@ -26,12 +25,12 @@ router.get("/cars", async (req, res) => {
         )
     }
 });
+
 // Route to get cars by plate
 router.get("/search/plate/:plate", async (req, res) => {
     console.log(req.params.plate);
     const plate = req.params.plate;
     const data = await carController.findByPlate(plate);
-    //console.log(data);
     res.json(data);
 });
 
@@ -40,7 +39,6 @@ router.get("/search/brand/:brand", async (req, res) => {
     console.log(req.params.brand);
     const brand = req.params.brand;
     const data = await carController.findByBrand(brand);
-    //console.log(data);
     res.json(data);
 });
 
@@ -50,6 +48,5 @@ router.post("/detect", upload.single("img"), async (req, res) => {
     const data = await VisionService.detectPlates([img], 1);
     res.json(data);
 })
-
 
 module.exports = router;

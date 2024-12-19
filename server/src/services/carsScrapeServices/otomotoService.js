@@ -10,7 +10,7 @@ class OtomotoService extends CarScraperService {
 
         const promises = offers.map(async (index, offer) => {
             try {
-                const linkTag = $(offer).find("h1 > a");
+                const linkTag = $(offer).find("p").children("a");
                 const link = linkTag.attr("href");
                 const fullName = linkTag.text().trim();
                 const year = $(offer).find("dl > dd[data-parameter='year']").text().trim() || "Unknown";

@@ -11,7 +11,7 @@ const pagesToScrape = 5;
 async function scrapeAndProcess(service) {
     await new Promise((resolve, reject) => {
         try {
-            console.log(`Starting ${service.source} scraping...`);
+            console.log(`\t\t\tStarting ${service.source} scraping...\t\t\t`);
             service.scrapePages(pagesToScrape).then((cars) => {
                 resolve(cars);
             })
@@ -19,7 +19,7 @@ async function scrapeAndProcess(service) {
         }
         catch (error) {
             console.error(`Error during ${service.source} scraping: ${error.message}`);
-            throw error;  // Rethrow error to be handled in the main loop
+            throw error;
         }
     }).then((cars) => {
         return processService.processCars(cars, service.source);
@@ -30,12 +30,11 @@ async function scrapeAndProcess(service) {
 const main = async () => {
     while (true) {
         try {
-            // Sequentially call scrapeAndProcess for each service
-            await scrapeAndProcess(otomotoService);  // This waits for Otomoto to finish scraping and processing
-            await scrapeAndProcess(olxService);      // This waits for OLX to finish scraping and processing
+            await scrapeAndProcess(otomotoService);
+            await scrapeAndProcess(olxService);
 
             console.log("Waiting for an hour...");
-            await new Promise(resolve => setTimeout(resolve, 3600000));  // 1-hour delay
+            await new Promise(resolve => setTimeout(resolve, 3600000));
         } catch (error) {
             console.error(`Unexpected error in the loop: ${error.message}`);
         }

@@ -24,11 +24,12 @@ class VisionService {
 
         let potentialPlates = [];
         for (const image of images) {
+            console.log("Processing image: ", image);
             let request;
             if (mode === 0) {
                 request = { image: { source: { imageUri: image } } };
             } else if (mode === 1) {
-                const base64Image = image.toString("base64"); // Convert buffer to base64
+                const base64Image = image.toString("base64");
                 request = { image: { content: base64Image } };
             }
             try {
@@ -47,13 +48,13 @@ class VisionService {
                 for (let i = 0; i < words.length - 1; i++) {
                     if (regex3let.test(words[i]) && regex4_5.test(words[i + 1])) {
                         const plate = `${words[i]}${words[i + 1]}`;
-                        labels[i].boundingPoly ?
+                        labels[i].boundingPoly && labels[i + 1].boundingPoly ?
                             potentialPlates.push({ plate, area: this.calculateBoundingBoxArea(labels[i].boundingPoly) + this.calculateBoundingBoxArea(labels[i + 1].boundingPoly) })
                             : potentialPlates.push({ plate });
 
                     } else if (regex2let.test(words[i]) && regex5.test(words[i + 1])) {
                         const plate = `${words[i]}${words[i + 1]}`;
-                        labels[i].boundingPoly ?
+                        labels[i].boundingPoly && labels[i + 1].boundingPoly ?
                             potentialPlates.push({ plate, area: this.calculateBoundingBoxArea(labels[i].boundingPoly) + this.calculateBoundingBoxArea(labels[i + 1].boundingPoly) })
                             : potentialPlates.push({ plate });
                     }
@@ -66,7 +67,7 @@ class VisionService {
                             : potentialPlates.push({ plate: word });
                     }
                 }
-                console.log(`Potential plates for image ${image}:\n`, potentialPlates);
+                console.log(`Potential plates for this offer:\n`, potentialPlates);
             }
 
             catch (error) {

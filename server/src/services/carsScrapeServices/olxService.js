@@ -12,9 +12,10 @@ class OlxService extends CarScraperService {
         const promises = offers.map(async (index, offer) => {
             try {
                 const linkTag = $(offer).find("div[data-cy='ad-card-title'] > a");
-                const link = 'https://www.olx.pl' + linkTag.attr("href");
-                const fullName = $(linkTag).find("h6").text().trim();
-                const year = $(offer).find("dl > dd[data-parameter='year']").text().trim() || "Unknown";
+                let link = linkTag.attr("href");
+                link.startsWith("https")? link : link = "https://www.olx.pl" + link;
+                const fullName = $(linkTag).find("h4").text().trim();
+                const year = $(offer).find("span > span").text().trim() || "Unknown";
                 const [photos, brand] = await this.extractPhotosAndBrandFromOfferPage(link);
                 cars.push({ link: link, full_name: fullName, year, brand, photos_links: photos });
             } catch (err) {

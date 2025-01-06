@@ -1,5 +1,6 @@
 const connectDB = require("./config/database");
 const Car = require("./models/car");
+const { deleteOne } = require("./controllers/carController");
 const axios = require("axios");
 
 connectDB();
@@ -17,14 +18,14 @@ const deleteOldOffers = async () => {
                     try {
                         const response = await axios.get(offer.link, { timeout: 5000 });
 
-                        if (response.status !== 200) {
+                        if (response.status !== 200 ?? response.status !== 403) {
                             console.log(`Deleting old offer: ${offer.link}`);
-                            await Car.deleteOne({ link: offer.link });
+                            await deleteOne(offer.link);
                         }
                     } catch (error) {
                         if (error.response && error.response.status) {
                             console.log(`Deleting old offer (status ${error.response.status}): ${offer.link}`);
-                            await Car.deleteOne({ link: offer.link });
+                            await deleteOne(offer.link);
                         } else {
                             console.error(`Error while checking/deleting offer ${offer.link}:`, error.message);
                         }

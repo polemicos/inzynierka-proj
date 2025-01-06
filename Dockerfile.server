@@ -1,13 +1,19 @@
-FROM node:20
+FROM node:alpine
 
-WORKDIR /app
+WORKDIR /app/server
 
 COPY ./server/package*.json ./
 
-RUN npm install
+RUN npm install --production && npm cache clean --force
 
-COPY ./server .
+COPY ./server ./
+
+RUN mkdir -p /app/logs
+
+RUN apt-get update && apt-get install -y supervisor && rm -rf /var/lib/apt/lists/*
+
+COPY ./server/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 EXPOSE 5000
 
-CMD ["node", "src/server.js"]
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

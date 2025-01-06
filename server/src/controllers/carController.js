@@ -27,9 +27,17 @@ async function createOne(car) {
     }
 }
 
+async function deleteOne(link) {
+    try {
+        await Car.deleteOne({ link });
+    } catch (error) {
+        console.error(`Error deleting car: ${error.message}`);
+    }
+}
 
 module.exports = {
     findByPlate,
     findByBrand,
-    createOne
+    createOne,
+    deleteOne
 }

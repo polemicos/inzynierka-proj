@@ -22,6 +22,7 @@ const DetectPlates = () => {
             const data = await response.json();
             setDetectedPlates(data);
         } catch (error) {
+            setDetectedPlates("nie wykryto rejestracji");
             console.error("Error detecting plates:", error);
         }
     };

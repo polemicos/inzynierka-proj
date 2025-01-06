@@ -47,7 +47,6 @@ const Cars = () => {
                     <CarCard key={index} car={car} />
                 ))}
             </div>
-            {/* Pagination Controls */}
             <Pagination className="align-self-center" limit={limit} total={cars.length} paginate={paginate} />
         </div>
     );

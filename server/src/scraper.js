@@ -30,8 +30,10 @@ async function scrapeAndProcess(service) {
 const main = async () => {
     while (true) {
         try {
-            await scrapeAndProcess(otomotoService);
-            await scrapeAndProcess(olxService);
+            await Promise.all([
+                scrapeAndProcess(otomotoService),
+                scrapeAndProcess(olxService),
+            ])
 
             console.log("Waiting for an hour...");
             await new Promise(resolve => setTimeout(resolve, 3600000));

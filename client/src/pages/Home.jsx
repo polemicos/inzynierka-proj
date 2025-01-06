@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import PlateSVG from '../plate.svg'; // adjust the path based on your file location
+import PlateSVG from '../plate.svg';
 import CarCard from '../components/CarCard';
 import Pagination from '../components/Pagination';
 
 const renderReceivedData = (receivedData) => {
-    if (receivedData) {
+    if (receivedData!==null && receivedData.length > 0) {
         return (
             <div className="container-md mt-5">
                 <h1>Znalezione pojazdy:</h1>
@@ -22,7 +22,7 @@ const renderReceivedData = (receivedData) => {
 }
 
 const Home = () => {
-    const [receivedData, setReceivedData] = useState(null); // Use state to track received data
+    const [receivedData, setReceivedData] = useState(null);
 
     const search = async (event) => {
         event.preventDefault();
@@ -38,10 +38,10 @@ const Home = () => {
                 const response = await fetch(`http://localhost:5000/api/search/brand/${searched}`);
                 data = await response.json();
             }
-            setReceivedData(data); // Update state with the received data
+            setReceivedData(data);
         } catch (error) {
             console.error('Error fetching data:', error);
-            setReceivedData(null); // Clear data in case of error
+            setReceivedData(null);
         }
     };
 

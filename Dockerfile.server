@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:20-alpine
 
 WORKDIR /app/server
 
@@ -10,7 +10,7 @@ COPY ./server ./
 
 RUN mkdir -p /app/logs
 
-RUN apt-get update && apt-get install -y supervisor && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache supervisor
 
 COPY ./server/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 

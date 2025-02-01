@@ -32,7 +32,7 @@ const main = async () => {
         try {
             await Promise.all([
                 scrapeAndProcess(otomotoService),
-                //scrapeAndProcess(olxService),
+                scrapeAndProcess(olxService),
             ])
 
             console.log("Waiting for an hour...");

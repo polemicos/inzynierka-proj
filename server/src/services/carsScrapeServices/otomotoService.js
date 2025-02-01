@@ -33,7 +33,7 @@ class OtomotoService extends CarScraperService {
         const nav = $("nav");
         const carCategoryLi = nav.find('li:contains("Osobowe")');
         const brandLi = carCategoryLi.next("li");
-        console.log(brandLi.attr("title"));
+        //console.log(brandLi.attr("title"));
         return brandLi.attr("title")==undefined? "Unknown" : brandLi.attr("title");
     }
 }

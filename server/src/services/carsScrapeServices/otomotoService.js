@@ -10,9 +10,9 @@ class OtomotoService extends CarScraperService {
 
         const promises = offers.map(async (index, offer) => {
             try {
-                const linkTag = $(offer).find("p").children("a");
+                const linkTag = $(offer).find("h2").children("a");
                 const link = linkTag.attr("href");
-                const fullName = linkTag.text().trim();
+                const fullName = $(offer).find("h2").text().trim();
                 const year = $(offer).find("dl > dd[data-parameter='year']").text().trim() || "Unknown";
                 const [photos, brand] = await this.extractPhotosAndBrandFromOfferPage(link);
                 cars.push({ link: link, full_name: fullName, year, brand, photos_links: photos });
@@ -26,14 +26,15 @@ class OtomotoService extends CarScraperService {
     }
 
     getPhotoDivs($) {
-        return $("div[data-testid='photo-gallery-item']");
+        return $("div[data-testid='photo-gallery']");
     }
 
     getBrand($) {
         const nav = $("nav");
-        const carCategoryLi = nav.find("li:contains('Osobowe')");
+        const carCategoryLi = nav.find('li:contains("Osobowe")');
         const brandLi = carCategoryLi.next("li");
-        return brandLi.text().trim();
+        console.log(brandLi.attr("title"));
+        return brandLi.attr("title")==undefined? "Unknown" : brandLi.attr("title");
     }
 }
 
